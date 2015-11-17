@@ -1,3 +1,8 @@
+//This is the the class that you get from parse.com for your application. 
+//You have to configure it according to your IDs. 
+//Please check parse.com.
+
+
 package com.example.calendarquickstart;
 
 import android.app.Application;
@@ -17,7 +22,7 @@ public class ParseApplication extends Application {
         // Enable Local Datastore.
         Parse.enableLocalDatastore(this);
 
-        Parse.initialize(this, "  M3vtaLmFwuNQBcTYoaxpZxA9AaVR3UVoi3pf50Hx", "1gvoJIDf4359RiTT090BjDxcFrtaEIps6OAtkBVA");
+        Parse.initialize(this, "Enter the ID you get from Parse Here", "Enter the ID you get from Parse Here");
 
         ParseACL defaultACL = new ParseACL();
 
