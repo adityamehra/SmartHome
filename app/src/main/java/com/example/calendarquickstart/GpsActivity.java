@@ -1,12 +1,11 @@
 package com.example.calendarquickstart;
 
-import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
+
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -17,24 +16,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 
-import android.app.Activity;
-import android.support.v7.app.AppCompatActivity;
-import android.content.Intent;
-import android.location.Location;
-import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.location.LocationListener;
@@ -43,7 +24,7 @@ import com.google.android.gms.location.LocationServices;
 
 
 public class GpsActivity extends AppCompatActivity implements ConnectionCallbacks,
-        OnConnectionFailedListener, LocationListener {
+        OnConnectionFailedListener, LocationListener, NavigationView.OnNavigationItemSelectedListener {
 
 
     // LogCat tag
@@ -68,10 +49,13 @@ public class GpsActivity extends AppCompatActivity implements ConnectionCallback
 
     // UI elements
     private TextView lblLocation;
-    private Button btnShowLocation, btnStartLocationUpdates;
+    private Button btnShowLocation, btnStartLocationUpdates, btnHomeLocation;
 
     double latitude;
     double longitude;
+
+    public static double homeLatitude;
+    public static double homeLongitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,15 +66,12 @@ public class GpsActivity extends AppCompatActivity implements ConnectionCallback
         lblLocation = (TextView) findViewById(R.id.myLocation);
         btnShowLocation = (Button) findViewById(R.id.buttonShowLocation);
         btnStartLocationUpdates = (Button) findViewById(R.id.buttonUpdateLocation);
+        btnHomeLocation = (Button) findViewById(R.id.buttonHomeLocation);
+
+        Log.d("GpsActivity", "I M in onCreate()");
 
         // First we need to check availability of play services
-        if (checkPlayServices()) {
-
-            // Building the GoogleApi client
-            buildGoogleApiClient();
-
-            createLocationRequest();
-        }
+        accessProvider();
 
         // Show location button click listener
         btnShowLocation.setOnClickListener(new View.OnClickListener() {
@@ -110,7 +91,85 @@ public class GpsActivity extends AppCompatActivity implements ConnectionCallback
             }
         });
 
+        // Updating home Coordiantes
+        btnHomeLocation.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                homeLatitude = latitude;
+                homeLongitude = longitude;
+
+                NavdrawerActivity.homeLocation.setText("Latitude is: " + homeLatitude + "\n" + "Longitude is: " + homeLongitude);
+
+                Toast.makeText(getApplicationContext(), "Home Location set", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+
     }
+
+
+    /**
+     * Method used in the thread in NavdrawerActivity
+     * */
+    public void accessProvider(){
+
+        if (checkPlayServices()) {
+
+            // Building the GoogleApi client
+            buildGoogleApiClient();
+
+            createLocationRequest();
+        }
+
+    }
+
+
+    /**
+     * Method to verify google play services on the device
+     * */
+    private boolean checkPlayServices() {
+        int resultCode = GooglePlayServicesUtil
+                .isGooglePlayServicesAvailable(GpsActivity.this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+                GooglePlayServicesUtil.getErrorDialog(resultCode, GpsActivity.this,
+                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            } else {
+                Toast.makeText(getApplicationContext(),
+                        "This device is not supported.", Toast.LENGTH_SHORT)
+                        .show();
+                finish();
+            }
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Creating google api client object
+     * */
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(GpsActivity.this)
+                .addConnectionCallbacks(GpsActivity.this)
+                .addOnConnectionFailedListener(GpsActivity.this)
+                .addApi(LocationServices.API)
+                .build();
+    }
+
+    /**
+     * Creating location request object
+     * */
+    protected void createLocationRequest() {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(UPDATE_INTERVAL);
+        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setSmallestDisplacement(DISPLACEMENT);
+    }
+
+
 
     @Override
     protected void onStart() {
@@ -130,6 +189,7 @@ public class GpsActivity extends AppCompatActivity implements ConnectionCallback
         // Resuming the periodic location updates
         if (mGoogleApiClient.isConnected() && mRequestingLocationUpdates) {
             startLocationUpdates();
+            displayLocation();
         }
 
     }
@@ -152,7 +212,7 @@ public class GpsActivity extends AppCompatActivity implements ConnectionCallback
     /**
      * Method to display the location on UI
      * */
-    private void displayLocation() {
+    public void displayLocation() {
 
         mLastLocation = LocationServices.FusedLocationApi
                 .getLastLocation(mGoogleApiClient);
@@ -202,48 +262,7 @@ public class GpsActivity extends AppCompatActivity implements ConnectionCallback
         }
     }
 
-    /**
-     * Creating google api client object
-     * */
-    protected synchronized void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-    }
 
-    /**
-     * Creating location request object
-     * */
-    protected void createLocationRequest() {
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(UPDATE_INTERVAL);
-        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setSmallestDisplacement(DISPLACEMENT);
-    }
-
-    /**
-     * Method to verify google play services on the device
-     * */
-    private boolean checkPlayServices() {
-        int resultCode = GooglePlayServicesUtil
-                .isGooglePlayServicesAvailable(this);
-        if (resultCode != ConnectionResult.SUCCESS) {
-            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
-                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
-                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
-            } else {
-                Toast.makeText(getApplicationContext(),
-                        "This device is not supported.", Toast.LENGTH_LONG)
-                        .show();
-                finish();
-            }
-            return false;
-        }
-        return true;
-    }
 
     /**
      * Starting the location updates
@@ -298,6 +317,11 @@ public class GpsActivity extends AppCompatActivity implements ConnectionCallback
 
         // Displaying the new location on UI
         displayLocation();
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        return false;
     }
 
     /*
