@@ -28,6 +28,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.view.ViewGroup;
@@ -39,9 +40,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.xml.datatype.Duration;
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity {
     GoogleAccountCredential mCredential;
     private TextView mOutputText;
     ProgressDialog mProgress;
@@ -270,7 +270,7 @@ public class MainActivity extends Activity {
 
             DateTime timeMax = new DateTime(System.currentTimeMillis() + 4 * 86400000);
 
-            List<String> eventStrings = new ArrayList<String>();
+            List<String> eventStrings = new ArrayList<>();
 
             List<DateTime> eventDate = new ArrayList<>();
 

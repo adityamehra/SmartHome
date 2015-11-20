@@ -10,6 +10,7 @@
     <string name="update_location">Update my location</string>
     <string name="lbl_you_are_at">You are at</string>
     <string name="btn_stop_location_updates">Stop location update</string>
+    <string name="home_location_button">This is my home location.</string>
 
     <!-- Navdrawer Activity-->
     <string name="title_activity_navdrawer">NavdrawerActivity</string>

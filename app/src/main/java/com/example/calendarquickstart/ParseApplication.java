@@ -22,7 +22,7 @@ public class ParseApplication extends Application {
         // Enable Local Datastore.
         Parse.enableLocalDatastore(this);
 
-        Parse.initialize(this, "Enter the ID you get from Parse Here", "Enter the ID you get from Parse Here");
+        Parse.initialize(this, "M3vtaLmFwuNQBcTYoaxpZxA9AaVR3UVoi3pf50Hx", "1gvoJIDf4359RiTT090BjDxcFrtaEIps6OAtkBVA");
 
         ParseACL defaultACL = new ParseACL();
 
