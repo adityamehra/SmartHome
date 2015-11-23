@@ -1,6 +1,7 @@
 package com.example.calendarquickstart;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Message;
 import android.os.Handler;
@@ -19,14 +20,15 @@ import android.widget.TextView;
 
 import com.parse.ParseUser;
 
-
-
 public class NavdrawerActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     public static  TextView currentLocation;
 
     public static  TextView homeLocation;
+
+    SharedPreferences mSharedPreferences;
+    SharedPreferences mLocationSharedPreferences;
 
     Thread thread;
     static Handler handler;
@@ -38,6 +40,8 @@ public class NavdrawerActivity extends AppCompatActivity
 
         currentLocation = (TextView) findViewById(R.id.textView5);
         homeLocation = (TextView) findViewById(R.id.textView6);
+        mSharedPreferences = getSharedPreferences("HomePrefs", 0);
+        mLocationSharedPreferences = getSharedPreferences("LocationPrefs", 0);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
@@ -69,13 +73,22 @@ public class NavdrawerActivity extends AppCompatActivity
             @Override
             public void handleMessage(Message msg){
 
-                Intent intent = new Intent(NavdrawerActivity.this, GpsActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
+                //Intent intent = new Intent(NavdrawerActivity.this, GpsActivity.class);
+                //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                //startActivity(intent);
 
             }
 
         };
+
+        String homeLocationString = mSharedPreferences.getString("HomeLocation", "Home Location not set");
+        homeLocation.setText(homeLocationString);
+
+        String LocationString = mLocationSharedPreferences.getString("Location", "Location not set");
+        currentLocation.setText(LocationString);
+
+
+
 
     }
 
@@ -134,10 +147,22 @@ public class NavdrawerActivity extends AppCompatActivity
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
+
             ParseUser.logOut();
             Intent intent = new Intent(this, LoginActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
+
+            mSharedPreferences
+                    .edit()
+                    .clear()
+                    .apply();
+
+            mLocationSharedPreferences
+                    .edit()
+                    .clear()
+                    .apply();
+
             finish();
             return true;
 

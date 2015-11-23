@@ -1,7 +1,9 @@
 package com.example.calendarquickstart;
 
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -21,6 +23,7 @@ import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListe
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.parse.ParseObject;
 
 
 public class GpsActivity extends AppCompatActivity implements ConnectionCallbacks,
@@ -51,11 +54,19 @@ public class GpsActivity extends AppCompatActivity implements ConnectionCallback
     private TextView lblLocation;
     private Button btnShowLocation, btnStartLocationUpdates, btnHomeLocation;
 
-    double latitude;
-    double longitude;
+    public static double latitude;
+    public  static double longitude;
 
-    public static double homeLatitude;
-    public static double homeLongitude;
+    public static float homeLatitude;
+    public static float homeLongitude;
+
+    //ParseObject HomeLocations
+    public static final String LATITUDE = "latitude";
+    public static final String LONGITUDE = "longitude";
+    public static final String HomeLocation = "HomeLocation";
+
+    SharedPreferences mSharedPreferences;
+    SharedPreferences mLocationSharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +78,8 @@ public class GpsActivity extends AppCompatActivity implements ConnectionCallback
         btnShowLocation = (Button) findViewById(R.id.buttonShowLocation);
         btnStartLocationUpdates = (Button) findViewById(R.id.buttonUpdateLocation);
         btnHomeLocation = (Button) findViewById(R.id.buttonHomeLocation);
+        mSharedPreferences = getSharedPreferences("HomePrefs", 0);
+        mLocationSharedPreferences = getSharedPreferences("LocationPrefs", 0);
 
         Log.d("GpsActivity", "I M in onCreate()");
 
@@ -96,12 +109,26 @@ public class GpsActivity extends AppCompatActivity implements ConnectionCallback
 
             @Override
             public void onClick(View v) {
-                homeLatitude = latitude;
-                homeLongitude = longitude;
+
+                homeLatitude = (float) latitude;
+                homeLongitude = (float) longitude;
 
                 NavdrawerActivity.homeLocation.setText("Latitude is: " + homeLatitude + "\n" + "Longitude is: " + homeLongitude);
 
+                ParseObject post = new ParseObject(HomeLocation);
+                post.put(LATITUDE, homeLatitude);
+                post.put(LONGITUDE, homeLongitude);
+                post.saveInBackground();
+
                 Toast.makeText(getApplicationContext(), "Home Location set", Toast.LENGTH_SHORT).show();
+
+
+                mSharedPreferences
+                        .edit()
+                        .putString("HomeLocation", "Latitude is: " + homeLatitude + "\n" + "Longitude is: " + homeLongitude)
+                        .apply();
+
+
             }
         });
 
@@ -223,7 +250,12 @@ public class GpsActivity extends AppCompatActivity implements ConnectionCallback
 
             lblLocation.setText("Latitude:" + latitude + ", Longitude:" + longitude);
 
-            NavdrawerActivity.currentLocation.setText("Latitude: " + latitude + "\nLongitide: " + longitude);
+            //NavdrawerActivity.currentLocation.setText("Latitude: " + latitude + "\nLongitide: " + longitude);
+
+            mLocationSharedPreferences
+                    .edit()
+                    .putString("Locationsd","Latitude: " + latitude + "\nLongitide: " + longitude )
+                    .apply();
 
         } else {
 

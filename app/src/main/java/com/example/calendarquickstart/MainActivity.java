@@ -32,7 +32,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -44,6 +46,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     GoogleAccountCredential mCredential;
     private TextView mOutputText;
+    private ListView mEventList;
     ProgressDialog mProgress;
 
     static final int REQUEST_ACCOUNT_PICKER = 1000;
@@ -59,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         LinearLayout activityLayout = new LinearLayout(this);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -77,7 +81,12 @@ public class MainActivity extends AppCompatActivity {
         mOutputText.setVerticalScrollBarEnabled(true);
         mOutputText.setMovementMethod(new ScrollingMovementMethod());
         mOutputText.setTextSize(25);
+
         activityLayout.addView(mOutputText);
+
+        mEventList = new ListView(this);
+        activityLayout.addView(mEventList);
+
 
         mProgress = new ProgressDialog(this);
         mProgress.setMessage("Calling Google Calendar API ...");
@@ -320,7 +329,9 @@ public class MainActivity extends AppCompatActivity {
                 mOutputText.setText("No results returned.");
             } else {
                 output.add(0, "Data retrieved using the Google Calendar API:");
-                mOutputText.setText(TextUtils.join("\n", output));
+                //mOutputText.setText(TextUtils.join("\n", output));
+                ArrayAdapter adapter = new ArrayAdapter(getApplicationContext(),android.R.layout.simple_list_item_1 , output);
+                mEventList.setAdapter(adapter);
             }
         }
 
