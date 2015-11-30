@@ -22,30 +22,65 @@
       <h1>
 <a id="smarthome" class="anchor" href="#smarthome" aria-hidden="true"><span class="octicon octicon-link"></span></a>SmartHome</h1>
 
-<p>Things to attend your life in simple, better and efficient way.</p>
+<p>This is the repo of my project  for CS6600.</p>
+
+<p>In this project, I am mainly focusing on how to make a thermostat aware of the user. This can be achieved by providing the thermostat the location of the user via his phone. Also, the thermostat can know the schedule of the user in advance via the Google Calendar. Once we have all this data, system can also predict the curent energy usage by the user.The user can set the location of his home, which is stored on the Parse.com. Parse.com is being used as the BaaS(Backend as a Service).
+Once the user sets the location of the house, a Geofence (<a href="https://en.wikipedia.org/wiki/Geo-fence">https://en.wikipedia.org/wiki/Geo-fence</a>) is created for this location. Whenever the user enters/exists this geofence, an event is trigerred which lets the thermostat know that user has left the location.</p>
 
 <h1>
 <a id="what" class="anchor" href="#what" aria-hidden="true"><span class="octicon octicon-link"></span></a>What?</h1>
 
-<p>This project is mainly used to provide a feed of users location to the server. 
-It also has some functionality via user can interact and know the status of the system.
-<img src="https://cloud.githubusercontent.com/assets/5478122/11383919/cce14c9a-92c8-11e5-809c-59055c05450f.png" alt=""></p>
+<p>This project is mainly used for two things -</p>
+
+<ol>
+<li><p>To provide users location to the system.</p></li>
+<li><p>To provide users schedule to the System from the Google Calendar.</p></li>
+</ol>
+
+<p>This can then be used to provide the user with current energy usage.</p>
 
 <h1>
 <a id="why" class="anchor" href="#why" aria-hidden="true"><span class="octicon octicon-link"></span></a>Why?</h1>
 
-<p>Mobile phones are now inseperable part of ones life, thus can be used to get info about the user a all times.
-In ths way we can reduce the energy consumption if we are able to predict when the user is away from the house and 
-thermostat can shut down.</p>
+<p>Mobile phones are now inseperable part of ones life, thus can be used to get info about the user at all times.</p>
+
+<p>By knowing the location and schedule of the user, the system can predict  better energy usage patterns by the user. Thus, helping the user in saving enrgy.</p>
+
+<p>The thermostat can shut down the heating system when the user is not at home.</p>
+
+<h1>
+<a id="how" class="anchor" href="#how" aria-hidden="true"><span class="octicon octicon-link"></span></a>How?</h1>
+
+<ol>
+<li>
+<p>Location:-</p>
+
+<p>The location of the user can be accessed via the users phone. I have used Google Location API to do this.</p>
+</li>
+<li>
+<p>Scheduel:-</p>
+
+<p>The schedule is taken from Google Calendar. To access Google Calendar, I have used Google Calendar API. The location and     time of the event can be extracted from there.</p>
+</li>
+<li>
+<p>Weather:-</p>
+
+<p>I have used the API provided by forecast.io to provide the details like temperature, sky cover, precipitation.</p>
+</li>
+</ol>
 
 <h1>
 <a id="resources" class="anchor" href="#resources" aria-hidden="true"><span class="octicon octicon-link"></span></a>Resources</h1>
 
-<p>This project uses resources from:-
-1. Google location API.
-2. Google Calendar API.
-3. Parse as BaaS.
-2. <a href="http://www.androidhive.info/2015/02/android-location-api-using-google-play-services/">http://www.androidhive.info/2015/02/android-location-api-using-google-play-services/</a></p>
+<p>This project uses resources from:-</p>
+
+<ol>
+<li><p>Google location API.</p></li>
+<li><p>Google Calendar API.</p></li>
+<li><p>Parse as BaaS.</p></li>
+<li><p><a href="http://www.androidhive.info/2015/02/android-location-api-using-google-play-services/">http://www.androidhive.info/2015/02/android-location-api-using-google-play-services/</a></p></li>
+<li><p>API from forecast.io. </p></li>
+</ol>
 
 <h1>
 <a id="database-view" class="anchor" href="#database-view" aria-hidden="true"><span class="octicon octicon-link"></span></a>DataBase View</h1>
