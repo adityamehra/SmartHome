@@ -1,3 +1,5 @@
+# Note: This project used parse as BaaS, so it may no longer work correctly.
+
 # SmartHome
 This is the repo of my project  for CS6600.
 
